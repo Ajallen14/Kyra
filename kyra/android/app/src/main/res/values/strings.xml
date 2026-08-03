@@ -1,0 +1,3 @@
+<resources>
+    <string name="accessibility_service_description">This service reads the screen and performs actions to automate tasks.</string>
+</resources>
