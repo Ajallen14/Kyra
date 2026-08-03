@@ -8,9 +8,18 @@ import android.util.Log
 // To create an accessibility service, you must extend the AccessibilityService class
 class AutomationAccessibilityService : AccessibilityService() {
 
+    companion object {
+        var instance: AutomationAccessibilityService? = null
+    }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
-        Log.d("AutoService", "Automation Accessibility Service Connected!")
+        Log.d("AutoService", "Automation Accessibility Service Connected")
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        instance = null // Clear it if the user turns off the service
+        return super.onUnbind(intent)
     }
 
     // Called when the system detects an event that matches your service's configuration
@@ -55,7 +64,7 @@ class AutomationAccessibilityService : AccessibilityService() {
             val childNode = node.getChild(i)
             if (childNode != null) {
                 traverseNode(childNode, builder, depth + 1)
-                childNode.recycle() // Important: Prevent memory leaks
+                childNode.recycle()
             }
         }
     }
