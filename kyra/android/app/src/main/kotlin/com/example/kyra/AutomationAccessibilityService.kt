@@ -50,6 +50,34 @@ class AutomationAccessibilityService : AccessibilityService() {
         return treeBuilder.toString()
     }
 
+    // To find a node by its text and click it
+    fun clickNodeByText(targetText: String): Boolean {
+        val rootNode = rootInActiveWindow ?: return false
+        
+        // Find all nodes that contain the target text
+        val nodes = rootNode.findAccessibilityNodeInfosByText(targetText)
+        
+        for (node in nodes) {
+            // If the node itself is clickable, click it
+            if (node.isClickable) {
+                Log.d("AutoService", "Clicking exact node: $targetText")
+                return node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            }
+            
+            // In many apps, the text isn't clickable, but its parent container is.
+            // We traverse up the tree to find the nearest clickable parent.
+            var parent = node.parent
+            while (parent != null) {
+                if (parent.isClickable) {
+                    Log.d("AutoService", "Clicking parent of: $targetText")
+                    return parent.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                }
+                parent = parent.parent
+            }
+        }
+        return false
+    }
+
     // Recursive function to read every UI element on the screen
     private fun traverseNode(node: AccessibilityNodeInfo, builder: StringBuilder, depth: Int) {
         val indent = " ".repeat(depth * 2)

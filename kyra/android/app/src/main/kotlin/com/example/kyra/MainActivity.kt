@@ -13,18 +13,26 @@ class MainActivity: FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            
-            // Flutter is asking for the screen tree
+            val service = AutomationAccessibilityService.instance
+
+            if (service == null) {
+                result.error("UNAVAILABLE", "Accessibility Service is not running.", null)
+                return@setMethodCallHandler
+            }
+
+            // Existing read function
             if (call.method == "getScreenTree") {
-                val service = AutomationAccessibilityService.instance
-                
-                if (service != null) {
-                    // If the service is running, get the tree and send it back to Flutter
-                    val tree = service.getScreenTree()
-                    result.success(tree)
+                val tree = service.getScreenTree()
+                result.success(tree)
+            } 
+            // NEW: Click function
+            else if (call.method == "clickNode") {
+                val targetText = call.argument<String>("text")
+                if (targetText != null) {
+                    val success = service.clickNodeByText(targetText)
+                    result.success(success)
                 } else {
-                    // If the service is null, the user hasn't enabled it in Android Settings
-                    result.error("UNAVAILABLE", "Accessibility Service is not running. Please enable it in Settings.", null)
+                    result.error("INVALID_ARGUMENT", "Target text is required", null)
                 }
             } else {
                 result.notImplemented()
