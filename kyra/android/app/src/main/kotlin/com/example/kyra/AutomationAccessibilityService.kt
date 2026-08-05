@@ -1,5 +1,6 @@
 package com.example.kyra
 
+import android.content.Intent
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -8,12 +9,14 @@ import android.util.Log
 // To create an accessibility service, you must extend the AccessibilityService class
 class AutomationAccessibilityService : AccessibilityService() {
 
+    // This companion object allows MainActivity to find the running service
     companion object {
         var instance: AutomationAccessibilityService? = null
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        instance = this // Save the instance when the OS connects the service
         Log.d("AutoService", "Automation Accessibility Service Connected")
     }
 

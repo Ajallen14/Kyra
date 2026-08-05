@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Entry point of the Flutter application.
 void main() {
   runApp(const MyApp());
 }
 
-/// Root widget of the application.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  /// MethodChannel used to communicate with Android native code.
-  ///
-  /// The channel name MUST match the channel name defined in
-  /// MainActivity.kt.
-  static const MethodChannel _channel =
-      MethodChannel('com.example.kyra/automation');
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +18,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Home screen used for testing the Accessibility Service.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -45,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   String _output = "Press the button to read the current UI tree.";
 
   /// Calls the Android Accessibility Service through the MethodChannel.
-  ///
   /// Android returns the UI tree as a String.
   Future<void> _getScreenTree() async {
     try {
